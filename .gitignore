@@ -1,0 +1,4 @@
+.venv/
+.vscode/
+crud_flask/__pycache__/
+.env

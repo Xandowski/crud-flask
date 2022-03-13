@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "crud-flask"
+version = "0.1.0"
+description = ""
+authors = ["xandowski <xandy-moraes@hotmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+Flask = "^2.0.3"
+python-dotenv = "^0.19.2"
+python-jose = "^3.3.0"
+Flask-Cors = "^3.0.10"
+six = "^1.16.0"
+wheel = "^0.37.1"
+Authlib = "^0.15.5"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
