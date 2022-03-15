@@ -1,0 +1,42 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.avatar {
+  border-radius: 50%;
+  height: 60px;
+}
+
+.logo {
+  height: 60px;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  height: 70px;
+  width: 100hw;
+  background-color: #ebe8e8;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* table,
+th,
+td {
+  border: 1px solid black;
+} */
+
+tr td:not(:first-child) {
+  width: 80px;
+}
+
+.tasks-table {
+  border-collapse: collapse;
+}

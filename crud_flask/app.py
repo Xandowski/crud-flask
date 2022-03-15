@@ -66,7 +66,7 @@ def callback_handling():
         "name": userinfo["name"],
         "picture": userinfo["picture"],
     }
-    return redirect("/perfil")
+    return redirect("/profile")
 
 
 @app.route("/")
@@ -77,14 +77,14 @@ def index():
 @app.route("/login")
 def login():
     # return render_template("login.html")
-    return auth0.authorize_redirect(redirect_uri="http://localhost:5000/callback")  # type: ignore
+    return auth0.authorize_redirect(redirect_uri=AUTH0_CALLBACK_URL)  # type: ignore
 
 
-@app.route("/perfil")
+@app.route("/profile")
 @requires_auth
-def perfil():
+def profile():
     return render_template(
-        "perfil.html",
+        "profile.html",
         userinfo=session["profile"],
         userinfo_pretty=json.dumps(session["jwt_payload"], indent=4),
     )
@@ -97,6 +97,6 @@ def logout():
     # Redirect user to logout endpoint
     params = {
         "returnTo": url_for("index", _external=True),
-        "client_id": "RJVWt5VbY12wkvfbuDVkdsm0cq7LnJQY",
+        "client_id": AUTH0_CLIENT_ID,
     }
     return redirect(auth0.api_base_url + "/v2/logout?" + urlencode(params))  # type: ignore

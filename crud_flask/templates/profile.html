@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/profile.css">
+    <title>Profile Page</title>
+</head>
+
+<body>
+    <div class="logged-in-box auth0-box logged-in">
+        <nav class="navbar">
+            <img class="logo" src="//cdn.auth0.com/samples/auth0_logo_final_blue_RGB.png"/>
+            <h2>Welcome {{userinfo['name']}}</h2>
+            <div>
+                <img class="avatar" src="{{userinfo['picture']}}" />
+                <a class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
+            </div>
+        </nav>
+        <main>
+            <h1 clas="title">Tasks</h1>
+            
+            <table class="tasks-table">
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>task name</td>
+                    <td>edit/delete</td>
+                  </tr>
+            </table>
+        </main>
+    </div>
+</body>
+
+</html>
