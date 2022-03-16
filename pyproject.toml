@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "crud-flask"
+name = "crud_flask"
 version = "0.1.0"
 description = ""
 authors = ["xandowski <xandy-moraes@hotmail.com>"]
@@ -8,7 +8,6 @@ authors = ["xandowski <xandy-moraes@hotmail.com>"]
 python = "^3.8"
 Flask = "^2.0.3"
 python-dotenv = "^0.19.2"
-python-jose = "^3.3.0"
 Flask-Cors = "^3.0.10"
 six = "^1.16.0"
 wheel = "^0.37.1"

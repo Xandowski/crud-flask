@@ -1,5 +1,4 @@
-html,
-body {
+* {
   margin: 0;
   padding: 0;
 }
@@ -25,8 +24,8 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 5px;
 }
-
 /* table,
 th,
 td {
@@ -39,4 +38,36 @@ tr td:not(:first-child) {
 
 .tasks-table {
   border-collapse: collapse;
+}
+
+.new-task {
+  width: 290px;
+}
+
+.new-task form label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.new-task form label input {
+  width: 180px;
+  height: 20px;
+}
+
+thead tr th {
+  border-bottom: 1px solid black;
+}
+
+tbody tr td {
+  border-bottom: 1px solid black;
+}
+
+tbody tr td input {
+  border: none;
+  text-align: center;
+}
+
+#clickableAwesomeFont {
+  height: 15px;
 }

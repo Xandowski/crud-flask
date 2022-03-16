@@ -4,7 +4,7 @@ from os import environ as env
 
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
-from flask import Flask, jsonify, redirect, render_template, session, url_for
+from flask import Flask, jsonify, redirect, render_template, request, session, url_for
 from flask_cors import cross_origin
 from markupsafe import escape
 from six.moves.urllib.parse import urlencode
@@ -88,6 +88,28 @@ def profile():
         userinfo=session["profile"],
         userinfo_pretty=json.dumps(session["jwt_payload"], indent=4),
     )
+
+
+@app.route("/task/create", methods=["POST"])
+def create():
+    task = request.form["create-task"]
+    date = request.form["create-date"]
+    vals = json.dumps({"delete": task})
+    response = f"""
+    <tr>
+        <td><input readonly type="text" name='{task}' value='{task}'></td>
+         <td><span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='{{name}}' hx-post='/task/delete' hx-vals='{vals}' hx-target='closest tr' hx-swap='outerHTML swap:0.5s'></i></span></td>
+        <td><input readonly type="date" name='{date}' value='{date}'></td>
+    </tr>
+    """
+    return response
+
+
+@app.route("/task/delete", methods=["POST"])
+def name_delete():
+    name = request.form["delete"]
+    print(f"{name} removed")
+    return ""
 
 
 @app.route("/logout")

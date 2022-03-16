@@ -6,10 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/css/profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
     <title>Profile Page</title>
 </head>
 
 <body>
+    <script src="https://unpkg.com/htmx.org@1.7.0"></script>
     <div class="logged-in-box auth0-box logged-in">
         <nav class="navbar">
             <img class="logo" src="//cdn.auth0.com/samples/auth0_logo_final_blue_RGB.png"/>
@@ -21,14 +23,52 @@
         </nav>
         <main>
             <h1 clas="title">Tasks</h1>
+            <section class="new-task">
+                    <!-- <label for="task-input">
+                        <p class="input-name">Add task:</p>
+                        <input type="text" id=""task-input>
+                    </label>
+
+                    <label for="date-input">
+                        <p clas="input-name">Expiration date:</p>
+                        <input type="date" id=""date-input>
+                    </label> -->
+                    <form class="form-inline" hx-post="/task/create" hx-swap="beforebegin" hx-target="#newTask" >
+                        <label for="task-name" class="form-group mx-sm-3 mb-2">
+                            <p>Task name:</p>
+                            <input type="text" class="form-control" name="create-task" id="task-name">
+                        </label>
+                        <label for="expiration-date" class="form-group mx-sm-3 mb-2">
+                            <p>Expiration date:</p>
+                            <input type="date" class="form-control" name="create-date" id="expiration-date">
+                        </label>
+                        <button class="btn btn-primary mb-2 centre">Add</button>
+                    </form>
+            </section>
             
-            <table class="tasks-table">
-                <tr>
-                    <td><input type="checkbox"></td>
-                    <td>task name</td>
-                    <td>edit/delete</td>
-                  </tr>
-            </table>
+           <section>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Edit/Delete</th>
+                        <th scope="col">Expiration</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {%for i in items%}
+                        <form>
+                        <tr>
+                            <td><input readonly type="text" name={{i}} value={{i}}></td>
+                            <td><span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='{{i}}' hx-post='/task/delete' hx-vals='{"delete": "{{i}}"}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span></td>
+                            <td><input readonly type="date" name={{i}} value={{i}}></td>
+                        </tr>
+                    </form>
+                        {%endfor%}
+                        <tr id="newTask"></tr>
+                    </tbody>
+                </table>
+           </section>
         </main>
     </div>
 </body>
