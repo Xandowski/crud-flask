@@ -95,10 +95,11 @@ def create():
     task = request.form["create-task"]
     date = request.form["create-date"]
     vals = json.dumps({"delete": task})
+    vals2 = json.dumps({"edit": task})
     response = f"""
     <tr>
         <td><input readonly type="text" name='{task}' value='{task}'></td>
-         <td><span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='{{name}}' hx-post='/task/delete' hx-vals='{vals}' hx-target='closest tr' hx-swap='outerHTML swap:0.5s'></i></span></td>
+         <td><span id='clickableAwesomeFont'><i class='fas fa-edit fa-lg' name='{{name}}' hx-post='/task/edit' hx-vals='{vals2}' hx-target='closest tr' hx-swap='outerHTML swap:0.5s'></i></span><span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='{{name}}' hx-post='/task/delete' hx-vals='{vals}' hx-target='closest tr' hx-swap='outerHTML swap:0.5s'></i></span></td>
         <td><input readonly type="date" name='{date}' value='{date}'></td>
     </tr>
     """
@@ -106,10 +107,27 @@ def create():
 
 
 @app.route("/task/delete", methods=["POST"])
-def name_delete():
+def delete():
     name = request.form["delete"]
     print(f"{name} removed")
     return ""
+
+
+@app.route("/task/edit", methods=["POST"])
+def edit():
+    task = request.form["edit"]
+    date = request.form["edit"]
+    vals = json.dumps({"edit": task})
+    response = f"""
+    <tr>
+        <td><input type="text" name='{task}' value='{task}' class="form-control" name="create-task"></td>
+        
+         <td><span id='clickableAwesomeFont'><i class='fas fa-square-check fa-lg' name='{{name}}' hx-post='/task/create' hx-vals='{vals}' hx-target='closest tr' hx-swap='outerHTML swap:0.5s'></i></span></td>
+        <td><input type="date" name='{date}' value='{date}' class="form-control" name="create-date"></td>
+    </tr>
+    """
+    print(f"{task} edited")
+    return response
 
 
 @app.route("/logout")

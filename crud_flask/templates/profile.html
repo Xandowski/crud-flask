@@ -58,14 +58,19 @@
                     <tbody>
                         {%for i in items%}
                         <form>
-                        <tr>
-                            <td><input readonly type="text" name={{i}} value={{i}}></td>
-                            <td><span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='{{i}}' hx-post='/task/delete' hx-vals='{"delete": "{{i}}"}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span></td>
-                            <td><input readonly type="date" name={{i}} value={{i}}></td>
-                        </tr>
-                    </form>
+                            <tr>
+                                <td><input readonly type="text" name={{i}} value={{i}}></td>
+                                <td>
+                                    <span id='clickableAwesomeFont'><i class='fas fa-pencil fa-lg' name='{{i}}' hx-post='/task/edit' hx-vals='{"edit": "{{i}}"}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>
+                                    <span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='{{i}}' hx-post='/task/delete' hx-vals='{"delete": "{{i}}"}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>        
+                                </td>
+                                <td><input readonly type="date" name={{i}} value={{i}}></td>
+                            </tr>
+                        </form>
                         {%endfor%}
-                        <tr id="newTask"></tr>
+                        <form>
+                            <tr id="newTask"></tr>
+                        </form>
                     </tbody>
                 </table>
            </section>
