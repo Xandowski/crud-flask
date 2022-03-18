@@ -12,6 +12,8 @@ Flask-Cors = "^3.0.10"
 six = "^1.16.0"
 wheel = "^0.37.1"
 Authlib = "^0.15.5"
+Flask-SQLAlchemy = "^2.5.1"
+mysql-connector-python = "^8.0.28"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

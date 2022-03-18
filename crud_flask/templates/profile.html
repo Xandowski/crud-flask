@@ -68,7 +68,7 @@
                             </tr>
                         </form>
                         {%endfor%}
-                        <form>
+                        <form class="form-inline" hx-post="/task/create" hx-swap="beforebegin" hx-target="#newTask">
                             <tr id="newTask"></tr>
                         </form>
                     </tbody>

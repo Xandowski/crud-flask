@@ -6,6 +6,7 @@ from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
 from flask import Flask, jsonify, redirect, render_template, request, session, url_for
 from flask_cors import cross_origin
+from flask_sqlalchemy import SQLAlchemy
 from markupsafe import escape
 from six.moves.urllib.parse import urlencode
 from werkzeug.exceptions import HTTPException
@@ -25,6 +26,9 @@ AUTH0_AUDIENCE = env.get(constants.AUTH0_AUDIENCE)
 
 
 app = Flask(__name__)
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://root:@localhost/tasks"
+db = SQLAlchemy(app)
 app.secret_key = constants.SECRET_KEY
 oauth = OAuth(app)
 
