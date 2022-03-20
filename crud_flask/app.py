@@ -26,11 +26,29 @@ AUTH0_AUDIENCE = env.get(constants.AUTH0_AUDIENCE)
 
 
 app = Flask(__name__)
+
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://root:@localhost/tasks"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db/database.sqlite3"
+
 db = SQLAlchemy(app)
+
 app.secret_key = constants.SECRET_KEY
 oauth = OAuth(app)
+
+# TODO https://htmx.org/examples/edit-row/
+
+
+class Task(db.Model):  # type: ignore
+    id = db.Column("id", db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(150))
+    create_date = db.Column(db.String(150))
+
+    def __init__(self, name, create_date):
+        self.name = name
+        self.create_date = create_date
+
+
+db.create_all()
 
 auth0 = oauth.register(
     "auth0",
@@ -87,50 +105,68 @@ def login():
 @app.route("/profile")
 @requires_auth
 def profile():
+    tasks = Task.query.all()
     return render_template(
         "profile.html",
         userinfo=session["profile"],
         userinfo_pretty=json.dumps(session["jwt_payload"], indent=4),
+        tasks=tasks,
     )
 
 
 @app.route("/task/create", methods=["POST"])
 def create():
-    task = request.form["create-task"]
-    date = request.form["create-date"]
-    vals = json.dumps({"delete": task})
-    vals2 = json.dumps({"edit": task})
+    task = Task(request.form["create-task"], request.form["create-date"])
+    db.session.add(task)
+    db.session.commit()
     response = f"""
     <tr>
-        <td><input readonly type="text" name='{task}' value='{task}'></td>
-         <td><span id='clickableAwesomeFont'><i class='fas fa-edit fa-lg' name='{{name}}' hx-post='/task/edit' hx-vals='{vals2}' hx-target='closest tr' hx-swap='outerHTML swap:0.5s'></i></span><span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='{{name}}' hx-post='/task/delete' hx-vals='{vals}' hx-target='closest tr' hx-swap='outerHTML swap:0.5s'></i></span></td>
-        <td><input readonly type="date" name='{date}' value='{date}'></td>
+        <td><input readonly type="text" name='create-task' value='{task.name}'></td>
+         <td><span id='clickableAwesomeFont'><i class='fas fa-edit fa-lg' name='{{name}}' hx-post='/task/edit/{task.id}' hx-target='closest tr' hx-swap='outerHTML swap:0.5s'></i></span><span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='{{name}}' hx-delete='/task/delete/{task.id}' hx-target='closest tr' hx-swap='outerHTML swap:0.5s'></i></span></td>
+        <td><input readonly type="date" name='create_date' value='{task.create_date}'></td>
     </tr>
     """
     return response
 
 
-@app.route("/task/delete", methods=["POST"])
-def delete():
-    name = request.form["delete"]
-    print(f"{name} removed")
+@app.route("/task/delete/<int:id>", methods=["DELETE"])
+def delete(id):
+    task = Task.query.get(id)
+    db.session.delete(task)
+    db.session.commit()
+    print(f"{task.name} removed")
     return ""
 
 
-@app.route("/task/edit", methods=["POST"])
-def edit():
-    task = request.form["edit"]
-    date = request.form["edit"]
-    vals = json.dumps({"edit": task})
+@app.route("/task/edit/<int:id>", methods=["GET", "POST"])
+def enable_edit(id):
+    task = Task.query.get(id)
+
     response = f"""
     <tr>
-        <td><input type="text" name='{task}' value='{task}' class="form-control" name="create-task"></td>
-        
-         <td><span id='clickableAwesomeFont'><i class='fas fa-square-check fa-lg' name='{{name}}' hx-post='/task/create' hx-vals='{vals}' hx-target='closest tr' hx-swap='outerHTML swap:0.5s'></i></span></td>
-        <td><input type="date" name='{date}' value='{date}' class="form-control" name="create-date"></td>
+        <td><input type="text" value='{task.name}' class="form-control" name='create-task'></td>
+         <td><span id='clickableAwesomeFont'><i class='fas fa-square-check fa-lg' name='{{name}}' hx-post='/task/{task.id}/edit' hx-target='closest tr' hx-swap='outerHTML swap:0.5s'></i></span></td>
+        <td><input type="date" name='create-date' value='{task.create_date}' class="form-control"></td>
     </tr>
     """
-    print(f"{task} edited")
+    return response
+
+
+@app.route("/task/<int:id>/edit", methods=["GET", "POST"])
+def edit(id):
+    task = Task.query.get(id)
+    task.name = request.form["create-task"]
+    task.create_date = request.form["create-date"]
+    db.session.commit()
+    response = f"""
+    <tr>
+        <td><input type="text" value='{task}' class="form-control" name="create-task"></td>
+        <td><span id='clickableAwesomeFont'><i class='fas fa-edit fa-lg' name='{{name}}' hx-post='/task/edit/{task.id}' hx-target='closest tr' hx-swap='outerHTML swap:0.5s'></i></span><span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='{{name}}' hx-delete='/task/delete/{task.id}' hx-target='closest tr' hx-swap='outerHTML swap:0.5s'></i></span></td>
+        <td><input type="date" name='created_date
+        ' value='{task.create_date}' class="form-control" name="create-date"></td>
+    </tr>
+    """
+    print(f"{task.name} edited")
     return response
 
 
@@ -144,3 +180,7 @@ def logout():
         "client_id": AUTH0_CLIENT_ID,
     }
     return redirect(auth0.api_base_url + "/v2/logout?" + urlencode(params))  # type: ignore
+
+
+if __name__ == "__main__":
+    app.run(debug=True)

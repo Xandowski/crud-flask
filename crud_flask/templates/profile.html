@@ -56,21 +56,19 @@
                     </tr>
                     </thead>
                     <tbody>
-                        {%for i in items%}
-                        <form>
+                        {%for t in tasks%}
+                        <form class="form-inline" hx-post="/task/{{t.id}}/edit" hx-swap="beforebegin" hx-target="#newTask">
                             <tr>
-                                <td><input readonly type="text" name={{i}} value={{i}}></td>
+                                <td><input readonly type="text" name="create-task" value={{t.name}}></td>
                                 <td>
-                                    <span id='clickableAwesomeFont'><i class='fas fa-pencil fa-lg' name='{{i}}' hx-post='/task/edit' hx-vals='{"edit": "{{i}}"}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>
-                                    <span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='{{i}}' hx-post='/task/delete' hx-vals='{"delete": "{{i}}"}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>        
+                                    <span id='clickableAwesomeFont'><i class='fas fa-edit fa-lg' name='a' hx-post='/task/edit/{{t.id}}'hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>
+                                    <span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='a' hx-delete='/task/delete/{{t.id}}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>        
                                 </td>
-                                <td><input readonly type="date" name={{i}} value={{i}}></td>
+                                <td><input readonly type="date" name="create-date" value={{t.create_date}}></td>
                             </tr>
                         </form>
                         {%endfor%}
-                        <form class="form-inline" hx-post="/task/create" hx-swap="beforebegin" hx-target="#newTask">
-                            <tr id="newTask"></tr>
-                        </form>
+                        <tr id="newTask"></tr>
                     </tbody>
                 </table>
            </section>
