@@ -3,4 +3,6 @@
 - [x] Config Auth0
 - [x] Config hmtx
 - [x] Config SQLAlchemy
-- [ ] Create crud operations
+- [X] Create crud operations
+- [ ] Create a better layout pages
+- [ ] Refactor the code

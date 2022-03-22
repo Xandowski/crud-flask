@@ -120,12 +120,13 @@ def create():
     db.session.add(task)
     db.session.commit()
     response = f"""
-    <tr hx-trigger='cancel' class='editing' hx-get="/task/{task.id}">
+    <tr>
         <td>{task.name}</td>
         <td>
             <button class="btn btn-danger"
-                hx-get='/task/{{task.id}}/edit'
-                hx-trigger="edit" hx-swap='outerHTML swap:1s'
+                hx-get='/task/{task.id}/edit'
+                hx-trigger="edit"
+                id='clickableAwesomeFont'
                 _="on click
                     if .editing is not empty
                     Swal.fire({{title: 'Already Editing', 
@@ -139,12 +140,12 @@ def create():
                     end
                     trigger edit"
                 >
-                    <i class='fas fa-edit fa-lg' hx-target='closest tr' hx-swap='outerHTML swap:0.5s' 
-                    name='edit'></i>
+                    <i class='fas fa-edit fa-lg' name='edit' hx-get='/task/{task.id}/edit' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i>
             </button>
-            <span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='a' hx-delete='/task/delete/{{task.id}}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>
+            <span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='a' hx-delete='/task/delete/{task.id}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>
         </td>
         <td>{task.create_date}</td>
+    <tr/>
     """
     return response
 
@@ -166,10 +167,10 @@ def enable_edit(id):
     <tr hx-trigger='cancel' class='editing' hx-get="/task/{task.id}">
         <td><input type="text" name='create-task' value='{task.name}'></td>
         <td>
-            <button id='clickableAwesomeFont' hx-put="/task/{task.id}" hx-include="closest tr">
+            <button hx-put="/task/{task.id}" hx-include="closest tr">
                 <i class='fas fa-square-check fa-lg'></i>
             </button>
-            <button class="btn btn-danger" hx-get="/task/{task.id}">
+            <button hx-get="/task/{task.id}">
                 <i class='fas fa-rectangle-xmark fa-lg'></i>
             </button>
         </td>
@@ -209,7 +210,7 @@ def edit(id):
                     trigger edit"
             >
                 <i class='fas fa-edit fa-lg' 
-                name='edit'>
+                name='edit' hx-get='/task/{task.id}/edit' hx-target='closest tr' hx-swap='outerHTML swap:1s'>
                 </i>
             </button>
             <span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='delete' hx-delete='/task/delete/{{task.id}}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>        
