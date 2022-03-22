@@ -55,16 +55,34 @@
                         <th scope="col">Expiration</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody hx-target="closest tr" hx-swap="outerHTML">
                         {%for t in tasks%}
-                        <form class="form-inline" hx-post="/task/{{t.id}}/edit" hx-swap="beforebegin" hx-target="#newTask">
+                        <form class="form-inline" hx-get="/task/{{t.id}}/edit" hx-swap="beforebegin" hx-target="#newTask">
                             <tr>
-                                <td><input readonly type="text" name="create-task" value={{t.name}}></td>
+                                <td>{{t.name}}</td>
                                 <td>
-                                    <span id='clickableAwesomeFont'><i class='fas fa-edit fa-lg' name='a' hx-post='/task/edit/{{t.id}}'hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>
+                                    <button class="btn btn-danger"
+                                    hx-get='/task/{{t.id}}/edit'
+                                    hx-trigger="edit" hx-swap='outerHTML swap:1s'
+                                    _="on click
+                                        if .editing is not empty
+                                        Swal.fire({title: 'Already Editing', 
+                                                    showCancelButton: true,
+                                                    confirmButtonText: 'Yep, Edit This Row!',
+                                                    text:'Hey!  You are already editing a row!  Do you want to cancel that edit and continue?'})
+                                        if the result's isConfirmed is false
+                                            halt
+                                        end
+                                        send cancel to .editing
+                                        end
+                                        trigger edit"
+                                    >
+                                        <i class='fas fa-edit fa-lg' 
+                                        name='edit'></i>
+                                    </button>
                                     <span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='a' hx-delete='/task/delete/{{t.id}}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>        
                                 </td>
-                                <td><input readonly type="date" name="create-date" value={{t.create_date}}></td>
+                                <td>{{t.create_date}}></td>
                             </tr>
                         </form>
                         {%endfor%}

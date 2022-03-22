@@ -120,11 +120,31 @@ def create():
     db.session.add(task)
     db.session.commit()
     response = f"""
-    <tr>
-        <td><input readonly type="text" name='create-task' value='{task.name}'></td>
-         <td><span id='clickableAwesomeFont'><i class='fas fa-edit fa-lg' name='{{name}}' hx-post='/task/edit/{task.id}' hx-target='closest tr' hx-swap='outerHTML swap:0.5s'></i></span><span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='{{name}}' hx-delete='/task/delete/{task.id}' hx-target='closest tr' hx-swap='outerHTML swap:0.5s'></i></span></td>
-        <td><input readonly type="date" name='create_date' value='{task.create_date}'></td>
-    </tr>
+    <tr hx-trigger='cancel' class='editing' hx-get="/task/{task.id}">
+        <td>{task.name}</td>
+        <td>
+            <button class="btn btn-danger"
+                hx-get='/task/{{task.id}}/edit'
+                hx-trigger="edit" hx-swap='outerHTML swap:1s'
+                _="on click
+                    if .editing is not empty
+                    Swal.fire({{title: 'Already Editing', 
+                                showCancelButton: true,
+                                confirmButtonText: 'Yep, Edit This Row!',
+                                text:'Hey!  You are already editing a row!  Do you want to cancel that edit and continue?'}})
+                    if the result's isConfirmed is false
+                        halt
+                    end
+                    send cancel to .editing
+                    end
+                    trigger edit"
+                >
+                    <i class='fas fa-edit fa-lg' hx-target='closest tr' hx-swap='outerHTML swap:0.5s' 
+                    name='edit'></i>
+            </button>
+            <span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='a' hx-delete='/task/delete/{{task.id}}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>
+        </td>
+        <td>{task.create_date}</td>
     """
     return response
 
@@ -138,32 +158,63 @@ def delete(id):
     return ""
 
 
-@app.route("/task/edit/<int:id>", methods=["GET", "POST"])
+@app.route("/task/<int:id>/edit")
 def enable_edit(id):
     task = Task.query.get(id)
 
     response = f"""
-    <tr>
-        <td><input type="text" value='{task.name}' class="form-control" name='create-task'></td>
-         <td><span id='clickableAwesomeFont'><i class='fas fa-square-check fa-lg' name='{{name}}' hx-post='/task/{task.id}/edit' hx-target='closest tr' hx-swap='outerHTML swap:0.5s'></i></span></td>
-        <td><input type="date" name='create-date' value='{task.create_date}' class="form-control"></td>
+    <tr hx-trigger='cancel' class='editing' hx-get="/task/{task.id}">
+        <td><input type="text" name='create-task' value='{task.name}'></td>
+        <td>
+            <button id='clickableAwesomeFont' hx-put="/task/{task.id}" hx-include="closest tr">
+                <i class='fas fa-square-check fa-lg'></i>
+            </button>
+            <button class="btn btn-danger" hx-get="/task/{task.id}">
+                <i class='fas fa-rectangle-xmark fa-lg'></i>
+            </button>
+        </td>
+        <td><input type="date" name='create-date' value='{task.create_date}'></td>
     </tr>
     """
     return response
 
 
-@app.route("/task/<int:id>/edit", methods=["GET", "POST"])
+@app.route("/task/<int:id>", methods=["GET", "PUT"])
 def edit(id):
     task = Task.query.get(id)
-    task.name = request.form["create-task"]
-    task.create_date = request.form["create-date"]
-    db.session.commit()
+
+    if request.method == "PUT":
+        task.name = request.form["create-task"]
+        task.create_date = request.form["create-date"]
+        db.session.commit()
+
     response = f"""
     <tr>
-        <td><input type="text" value='{task}' class="form-control" name="create-task"></td>
-        <td><span id='clickableAwesomeFont'><i class='fas fa-edit fa-lg' name='{{name}}' hx-post='/task/edit/{task.id}' hx-target='closest tr' hx-swap='outerHTML swap:0.5s'></i></span><span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='{{name}}' hx-delete='/task/delete/{task.id}' hx-target='closest tr' hx-swap='outerHTML swap:0.5s'></i></span></td>
-        <td><input type="date" name='created_date
-        ' value='{task.create_date}' class="form-control" name="create-date"></td>
+        <td>{task.name}</td>
+        <td>
+            <button class="btn btn-danger"
+                hx-get='/task/edit/{{task.id}}'
+                hx-trigger="edit" hx-swap='outerHTML swap:1s'
+                _="on click
+                    if .editing is not empty
+                    Swal.fire({{title: 'Already Editing', 
+                                showCancelButton: true,
+                                confirmButtonText: 'Yep, Edit This Row!',
+                                text:'Hey!  You are already editing a row!  Do you want to cancel that edit and continue?'}})
+                    if the result's isConfirmed is false
+                        halt
+                    end
+                    send cancel to .editing
+                    end
+                    trigger edit"
+            >
+                <i class='fas fa-edit fa-lg' 
+                name='edit'>
+                </i>
+            </button>
+            <span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='delete' hx-delete='/task/delete/{{task.id}}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>        
+        </td>
+        <td>{task.create_date}</td>
     </tr>
     """
     print(f"{task.name} edited")
