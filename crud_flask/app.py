@@ -122,8 +122,9 @@ def create():
     response = f"""
     <tr>
         <td>{task.name}</td>
+        <td>{task.create_date}</td>
         <td>
-            <button class="btn btn-danger"
+            <span
                 hx-get='/task/{task.id}/edit'
                 hx-trigger="edit"
                 id='clickableAwesomeFont'
@@ -141,10 +142,9 @@ def create():
                     trigger edit"
                 >
                     <i class='fas fa-edit fa-lg' name='edit' hx-get='/task/{task.id}/edit' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i>
-            </button>
-            <span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='a' hx-delete='/task/delete/{task.id}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>
+            </span>
+            <span><i class='fas fa-trash fa-lg' name='a' hx-delete='/task/delete/{task.id}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>
         </td>
-        <td>{task.create_date}</td>
     <tr/>
     """
     return response
@@ -162,19 +162,20 @@ def delete(id):
 @app.route("/task/<int:id>/edit")
 def enable_edit(id):
     task = Task.query.get(id)
-
+    print(task.id)
     response = f"""
     <tr hx-trigger='cancel' class='editing' hx-get="/task/{task.id}">
         <td><input type="text" name='create-task' value='{task.name}'></td>
-        <td>
-            <button hx-put="/task/{task.id}" hx-include="closest tr">
-                <i class='fas fa-square-check fa-lg'></i>
-            </button>
-            <button hx-get="/task/{task.id}">
-                <i class='fas fa-rectangle-xmark fa-lg'></i>
-            </button>
-        </td>
         <td><input type="date" name='create-date' value='{task.create_date}'></td>
+        <td>
+            <span hx-put="/task/{task.id}" hx-include="closest tr">
+                <i class='fas fa-square-check fa-lg'></i>
+            </span>
+            <span hx-get="/task/{task.id}">
+                <i class='fas fa-rectangle-xmark fa-lg'></i>
+            </span>
+        </td>
+        
     </tr>
     """
     return response
@@ -192,8 +193,9 @@ def edit(id):
     response = f"""
     <tr>
         <td>{task.name}</td>
+        <td>{task.create_date}</td>
         <td>
-            <button class="btn btn-danger"
+            <span"
                 hx-get='/task/edit/{{task.id}}'
                 hx-trigger="edit" hx-swap='outerHTML swap:1s'
                 _="on click
@@ -212,10 +214,9 @@ def edit(id):
                 <i class='fas fa-edit fa-lg' 
                 name='edit' hx-get='/task/{task.id}/edit' hx-target='closest tr' hx-swap='outerHTML swap:1s'>
                 </i>
-            </button>
-            <span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='delete' hx-delete='/task/delete/{{task.id}}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>        
+            </span>
+            <span><i class='fas fa-trash fa-lg' name='delete' hx-delete='/task/delete/{{task.id}}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>        
         </td>
-        <td>{task.create_date}</td>
     </tr>
     """
     print(f"{task.name} edited")
@@ -236,3 +237,4 @@ def logout():
 
 if __name__ == "__main__":
     app.run(debug=True)
+    app.config["TEMPLATES_AUTO_RELOAD"] = True

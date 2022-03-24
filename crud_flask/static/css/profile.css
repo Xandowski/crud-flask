@@ -1,6 +1,17 @@
+@import "colors.css";
+
 * {
   margin: 0;
   padding: 0;
+}
+
+a {
+  color: var(--color-third);
+  text-decoration: none;
+}
+
+html {
+  font-family: "Noto Serif", serif;
 }
 
 .avatar {
@@ -15,9 +26,35 @@
 .navbar {
   display: flex;
   justify-content: space-between;
+  align-items: flex-end;
   height: 70px;
   width: 100hw;
-  background-color: #ebe8e8;
+  background-color: var(--color-second);
+}
+
+.fa-arrow-right-from-bracket {
+  color: var(--color-third);
+  cursor: pointer;
+}
+
+.fa-trash {
+  color: var(--color-four);
+  cursor: pointer;
+}
+
+.fa-edit {
+  color: var(--color-five);
+  cursor: pointer;
+}
+
+.fa-square-check {
+  color: var(--color-five);
+  cursor: pointer;
+}
+
+.fa-rectangle-xmark {
+  color: var(--color-four);
+  cursor: pointer;
 }
 
 main {
@@ -32,16 +69,31 @@ td {
   border: 1px solid black;
 } */
 
-tr td:not(:first-child) {
-  width: 80px;
+main section {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+table,
+form {
+  width: 360px;
+  margin-top: 10px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-between; */
+  align-items: center;
+}
+
+form label {
+  width: 100%;
 }
 
 .tasks-table {
   border-collapse: collapse;
-}
-
-.new-task {
-  width: 290px;
 }
 
 .new-task form label {
@@ -53,6 +105,11 @@ tr td:not(:first-child) {
 .new-task form label input {
   width: 180px;
   height: 20px;
+  border-radius: 5px;
+}
+
+.new-task form label p {
+  font-size: 14px;
 }
 
 thead tr th {
@@ -61,6 +118,10 @@ thead tr th {
 
 tbody tr td {
   border-bottom: 1px solid black;
+  width: 45px;
+  text-align: center;
+  height: 40px;
+  font-size: 15px;
 }
 
 tbody tr td input {
@@ -70,4 +131,21 @@ tbody tr td input {
 
 #clickableAwesomeFont {
   height: 15px;
+}
+
+.btn-new-task {
+  background-color: var(--color-first);
+  border: 0;
+  border-radius: 5px;
+  width: 290px;
+  height: 20px;
+  font-weight: bold;
+  margin: 15px 0;
+  cursor: pointer;
+  transition: all 0.5s ease-in;
+}
+
+.btn-new-task:hover {
+  background-color: var(--color-first-dark);
+  transition: all 0.5s ease-in;
 }

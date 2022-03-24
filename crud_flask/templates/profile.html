@@ -5,7 +5,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/css/profile.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
     <title>Profile Page</title>
 </head>
@@ -14,75 +17,73 @@
     <script src="https://unpkg.com/htmx.org@1.7.0"></script>
     <div class="logged-in-box auth0-box logged-in">
         <nav class="navbar">
-            <img class="logo" src="//cdn.auth0.com/samples/auth0_logo_final_blue_RGB.png"/>
-            <h2>Welcome {{userinfo['name']}}</h2>
-            <div>
-                <img class="avatar" src="{{userinfo['picture']}}" />
-                <a class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
-            </div>
+            <img class="avatar" src="{{userinfo['picture']}}" />
+            <h2>Welcome, {{userinfo['name']}}</h2>
+            <a class="btn" href="/logout">Logout <i class="fa-solid fa-arrow-right-from-bracket"></i></a>
         </nav>
         <main>
-            <h1 clas="title">Tasks</h1>
+            <h1 clas="title">MyTasks</h1>
             <section class="new-task">
-                    <!-- <label for="task-input">
-                        <p class="input-name">Add task:</p>
-                        <input type="text" id=""task-input>
+                <form 
+                    class="form-inline" 
+                    hx-post="/task/create" 
+                    hx-swap="beforebegin"
+                    hx-target="#newTask" 
+                >
+                    <label for="task-name" class="form-group mx-sm-3 mb-2">
+                        <p>Task name:</p>
+                        <input type="text" class="form-control" name="create-task" id="task-name">
                     </label>
-
-                    <label for="date-input">
-                        <p clas="input-name">Expiration date:</p>
-                        <input type="date" id=""date-input>
-                    </label> -->
-                    <form class="form-inline" hx-post="/task/create" hx-swap="beforebegin" hx-target="#newTask" >
-                        <label for="task-name" class="form-group mx-sm-3 mb-2">
-                            <p>Task name:</p>
-                            <input type="text" class="form-control" name="create-task" id="task-name">
-                        </label>
-                        <label for="expiration-date" class="form-group mx-sm-3 mb-2">
-                            <p>Expiration date:</p>
-                            <input type="date" class="form-control" name="create-date" id="expiration-date">
-                        </label>
-                        <button class="btn btn-primary mb-2 centre">Add</button>
-                    </form>
-            </section>
+                    <label for="expiration-date" class="form-group mx-sm-3 mb-2">
+                        <p>Expiration date:</p>
+                        <input type="date" class="form-control" name="create-date" id="expiration-date">
+                    </label>
+                    <button class="btn-new-task">Create Task</button>
+                </form>
+        </section>
             
            <section>
                 <table class="table delete-row-example">
-                    <thead>
+                    <!-- <thead>
                     <tr>
                         <th scope="col">Name</th>
                         <th scope="col">Edit/Delete</th>
                         <th scope="col">Expiration</th>
                     </tr>
-                    </thead>
+                    </thead> -->
                     <tbody hx-target="closest tr" hx-swap="outerHTML">
                         {%for t in tasks%}
                     
                             <tr>
                                 <td>{{t.name}}</td>
+                                <td>{{t.create_date}}</td>
                                 <td>
-                                    <button class="btn btn-danger"
-                                    hx-get='/task/{{t.id}}/edit'
-                                    hx-trigger="edit"
-                                    id='clickableAwesomeFont'
-                                    _="on click
-                                        if .editing is not empty
-                                        Swal.fire({title: 'Already Editing', 
-                                                    showCancelButton: true,
-                                                    confirmButtonText: 'Yep, Edit This Row!',
-                                                    text:'Hey!  You are already editing a row!  Do you want to cancel that edit and continue?'})
-                                        if the result's isConfirmed is false
-                                            halt
-                                        end
-                                        send cancel to .editing
-                                        end
-                                        trigger edit"
+                                    <span
+                                        hx-target='closest tr' 
+                                        hx-swap='outerHTML swap:1s'
+                                        hx-get='/task/{{t.id}}/edit'
+                                        hx-trigger="edit"
+                                        _="on click
+                                            if .editing is not empty
+                                            Swal.fire({title: 'Already Editing', 
+                                                        showCancelButton: true,
+                                                        confirmButtonText: 'Yep, Edit This Row!',
+                                                        text:'Hey!  You are already editing a row!  Do you want to cancel that edit and continue?'})
+                                            if the result's isConfirmed is false
+                                                halt
+                                            end
+                                            send cancel to .editing
+                                            end
+                                            trigger edit"
                                     >
-                                        <i class='fas fa-edit fa-lg' name='edit' hx-get='/task/{{t.id}}/edit' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i>
-                                    </button>
-                                    <span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='a' hx-delete='/task/delete/{{t.id}}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>        
+                                        <i 
+                                            class='fas fa-edit fa-lg' 
+                                            name='edit'
+                                            hx-get='/task/{{t.id}}/edit'
+                                        ></i>
+                                    </span>
+                                    <span><i class='fas fa-trash fa-lg' name='delete' hx-delete='/task/delete/{{t.id}}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>        
                                 </td>
-                                <td>{{t.create_date}}></td>
                             </tr>
                         {%endfor%}
                         <tr id="newTask"></tr>
