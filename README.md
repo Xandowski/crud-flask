@@ -4,5 +4,6 @@
 - [x] Config hmtx
 - [x] Config SQLAlchemy
 - [X] Create crud operations
-- [ ] Create a better layout pages
+- [X] Create a better layout pages
 - [ ] Refactor the code
+- [ ] Deploy on heroku
