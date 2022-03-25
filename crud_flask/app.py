@@ -142,7 +142,7 @@ def create():
                     trigger edit"
                 >
                     <i class='fas fa-edit fa-lg' name='edit' hx-get='/task/{task.id}/edit' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i>
-            </span>
+            </span hx-delete='/task/delete/{task.id}'>
             <span><i class='fas fa-trash fa-lg' name='a' hx-delete='/task/delete/{task.id}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>
         </td>
     <tr/>
@@ -214,8 +214,8 @@ def edit(id):
                 <i class='fas fa-edit fa-lg' 
                 name='edit' hx-get='/task/{task.id}/edit' hx-target='closest tr' hx-swap='outerHTML swap:1s'>
                 </i>
-            </span>
-            <span><i class='fas fa-trash fa-lg' name='delete' hx-delete='/task/delete/{{task.id}}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>        
+            </span hx-delete='/task/delete/{task.id}'>
+            <span><i class='fas fa-trash fa-lg' name='delete' hx-delete='/task/delete/{task.id}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>        
         </td>
     </tr>
     """

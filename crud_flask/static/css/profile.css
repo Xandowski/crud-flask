@@ -10,8 +10,11 @@ a {
   text-decoration: none;
 }
 
-html {
+html,
+body {
   font-family: "Noto Serif", serif;
+  height: 100vh;
+  background-color: var(--color-second);
 }
 
 .avatar {
@@ -23,17 +26,22 @@ html {
   height: 60px;
 }
 
+.logged-in-box,
+.wrraper-profile {
+  height: 100vh;
+}
+
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
   height: 70px;
-  width: 100hw;
-  background-color: var(--color-second);
+  width: 100vw;
+  background-color: var(--color-third);
 }
 
 .fa-arrow-right-from-bracket {
-  color: var(--color-third);
+  color: var(--color-second);
   cursor: pointer;
 }
 

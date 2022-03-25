@@ -1,0 +1,30 @@
+@import "colors.css";
+
+html,
+body {
+  height: 100vh;
+}
+
+.wrapper {
+  background-color: var(--color-third);
+}
+
+.btn-login {
+  border: none;
+  border-radius: 50px;
+  width: 160px;
+  height: 25px;
+  background-color: var(--color-second);
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 50px;
+}
+
+.wrapper main {
+  margin-top: 200px;
+  height: 100%;
+}
+
+a {
+  color: white;
+}

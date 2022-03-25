@@ -7,3 +7,9 @@
 - [X] Create a better layout pages
 - [ ] Refactor the code
 - [ ] Deploy on heroku
+
+<div>
+   <video autoplay>
+      <source src="./videos/demonstration.webm" type="">
+   </video>
+</div>
