@@ -8,8 +8,6 @@
 - [ ] Refactor the code
 - [ ] Deploy on heroku
 
-<div>
-   <video autoplay>
-      <source src="./videos/demonstration.webm" type="">
-   </video>
-</div>
+<!-- <img src="./videos/demonstration.gif"> -->
+
+![Demonstration video](./videos/demonstration.gif "Demonstration")
