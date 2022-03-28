@@ -9,6 +9,6 @@ def configure(app):
     ma.init_app(app)
 
 
-class TaskSchema(ma.ModelSchema):
+class TaskSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Task

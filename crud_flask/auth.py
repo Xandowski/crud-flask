@@ -31,7 +31,6 @@ def configure(app=None):
             "scope": "openid profile email",
         },
     )
-
     return auth0
 
 

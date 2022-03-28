@@ -1,108 +1,14 @@
 import json
-from functools import wraps
-from os import environ as env
 
-from authlib.integrations.flask_client import OAuth
-from dotenv import find_dotenv, load_dotenv
-from flask import Flask, jsonify, redirect, render_template, request, session, url_for
-from flask_cors import cross_origin
-from flask_sqlalchemy import SQLAlchemy
-from markupsafe import escape
-from six.moves.urllib.parse import urlencode
-from werkzeug.exceptions import HTTPException
+from flask import Blueprint, render_template, request, session
 
-from . import constants
+from .auth import requires_auth
+from .model import Task, db
 
-ENV_FILE = find_dotenv()
-if ENV_FILE:
-    load_dotenv(ENV_FILE)
-
-AUTH0_CALLBACK_URL = env.get(constants.AUTH0_CALLBACK_URL)
-AUTH0_CLIENT_ID = env.get(constants.AUTH0_CLIENT_ID)
-AUTH0_CLIENT_SECRET = env.get(constants.AUTH0_CLIENT_SECRET)
-AUTH0_DOMAIN = env.get(constants.AUTH0_DOMAIN)
-AUTH0_BASE_URL = AUTH0_DOMAIN
-AUTH0_AUDIENCE = env.get(constants.AUTH0_AUDIENCE)
+bp_tasks = Blueprint("tasks", __name__)
 
 
-app = Flask(__name__)
-
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db/database.sqlite3"
-
-db = SQLAlchemy(app)
-
-app.secret_key = constants.SECRET_KEY
-oauth = OAuth(app)
-
-# TODO https://htmx.org/examples/edit-row/
-
-
-class Task(db.Model):  # type: ignore
-    id = db.Column("id", db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(150))
-    create_date = db.Column(db.String(150))
-
-    def __init__(self, name, create_date):
-        self.name = name
-        self.create_date = create_date
-
-
-db.create_all()
-
-auth0 = oauth.register(
-    "auth0",
-    client_id=AUTH0_CLIENT_ID,
-    client_secret=AUTH0_CLIENT_SECRET,
-    api_base_url=AUTH0_DOMAIN,
-    access_token_url=f"{AUTH0_DOMAIN}/oauth/token",
-    authorize_url=f"{AUTH0_DOMAIN}/authorize",
-    client_kwargs={
-        "scope": "openid profile email",
-    },
-)
-
-
-def requires_auth(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        if "profile" not in session:
-            # Redirect to Login page here
-            return redirect("/")
-        return f(*args, **kwargs)
-
-    return decorated
-
-
-@app.route("/callback")
-def callback_handling():
-    # Handles response from token endpoint
-    auth0.authorize_access_token()  # type: ignore
-    resp = auth0.get("userinfo")  # type: ignore
-    userinfo = resp.json()
-
-    # Store the user information in flask session.
-    session["jwt_payload"] = userinfo
-    session["profile"] = {
-        "user_id": userinfo["sub"],
-        "name": userinfo["name"],
-        "picture": userinfo["picture"],
-    }
-    return redirect("/profile")
-
-
-@app.route("/")
-def index():
-    return render_template("index.html")
-
-
-@app.route("/login")
-def login():
-    # return render_template("login.html")
-    return auth0.authorize_redirect(redirect_uri=AUTH0_CALLBACK_URL)  # type: ignore
-
-
-@app.route("/profile")
+@bp_tasks.route("/profile", methods=["GET"])
 @requires_auth
 def profile():
     tasks = Task.query.all()
@@ -114,7 +20,7 @@ def profile():
     )
 
 
-@app.route("/task/create", methods=["POST"])
+@bp_tasks.route("/task/create", methods=["POST"])
 def create():
     task = Task(request.form["create-task"], request.form["create-date"])
     db.session.add(task)
@@ -150,7 +56,7 @@ def create():
     return response
 
 
-@app.route("/task/delete/<int:id>", methods=["DELETE"])
+@bp_tasks.route("/task/delete/<int:id>", methods=["DELETE"])
 def delete(id):
     task = Task.query.get(id)
     db.session.delete(task)
@@ -159,7 +65,7 @@ def delete(id):
     return ""
 
 
-@app.route("/task/<int:id>/edit")
+@bp_tasks.route("/task/<int:id>/edit", methods=["GET"])
 def enable_edit(id):
     task = Task.query.get(id)
     print(task.id)
@@ -181,7 +87,7 @@ def enable_edit(id):
     return response
 
 
-@app.route("/task/<int:id>", methods=["GET", "PUT"])
+@bp_tasks.route("/task/<int:id>", methods=["GET", "PUT"])
 def edit(id):
     task = Task.query.get(id)
 
@@ -220,21 +126,5 @@ def edit(id):
     </tr>
     """
     print(f"{task.name} edited")
+
     return response
-
-
-@app.route("/logout")
-def logout():
-    # Clear session stored data
-    session.clear()
-    # Redirect user to logout endpoint
-    params = {
-        "returnTo": url_for("index", _external=True),
-        "client_id": AUTH0_CLIENT_ID,
-    }
-    return redirect(auth0.api_base_url + "/v2/logout?" + urlencode(params))  # type: ignore
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
-    app.config["TEMPLATES_AUTO_RELOAD"] = True
