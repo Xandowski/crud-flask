@@ -5,7 +5,7 @@
 - [x] Config SQLAlchemy
 - [X] Create crud operations
 - [X] Create a better layout pages
-- [ ] Refactor the code
+- [X] Refactor the code
 - [ ] Deploy on heroku
 
 <!-- <img src="./videos/demonstration.gif"> -->
