@@ -19,6 +19,7 @@ flask-marshmallow = "^0.14.0"
 marshmallow-sqlalchemy = "^0.28.0"
 gunicorn = "^20.1.0"
 psycopg2-binary = "^2.9.3"
+requests = "^2.27.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
