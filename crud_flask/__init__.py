@@ -1,7 +1,9 @@
 __version__ = "0.1.0"
 
+from os import environ as env
 
 from authlib.integrations.flask_client import OAuth
+from dotenv import find_dotenv, load_dotenv
 from flask import Flask
 from flask_migrate import Migrate
 
@@ -13,11 +15,14 @@ from .model import configure as config_db
 from .serializer import configure as config_ma
 from .tasks import bp_tasks
 
+ENV_FILE = find_dotenv()
+if ENV_FILE:
+    load_dotenv(ENV_FILE)
 
 def create_app():
     app = Flask(__name__)
 
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////tmp/database.sqlite3"
+    app.config["SQLALCHEMY_DATABASE_URI"] = f"{env.get('DATABASE_URL')}"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     app.secret_key = constants.SECRET_KEY
