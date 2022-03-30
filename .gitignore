@@ -2,4 +2,6 @@
 .vscode/
 crud_flask/__pycache__/
 .env
+.env.dev
+.env.prod
 db/
