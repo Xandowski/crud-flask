@@ -1,12 +1,7 @@
 @import "profile.css";
-@import "home.css";
 
-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-footer a {
-  color: black;
+@layer utilities {
+  .content-auto {
+    content-visibility: auto;
+  }
 }
