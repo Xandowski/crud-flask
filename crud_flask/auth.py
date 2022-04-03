@@ -57,7 +57,9 @@ def configure(app):
         resp = auth0.get("userinfo")  # type: ignore
         userinfo = resp.json()
 
-        if not User.query.get(userinfo['email']):
+        user = User.query.filter_by(email=userinfo['email']).first()
+
+        if not user:
             user = User(username=userinfo['given_name'], 
                         lastname=userinfo['family_name'], 
                         nickname=userinfo['nickname'], 
@@ -65,7 +67,7 @@ def configure(app):
             db.session.add(user)
             db.session.commit()
         
-        user = User.query.filter_by(email=userinfo['email']).first()
+        
 
         # Store the user information in flask session.
         session["jwt_payload"] = userinfo
