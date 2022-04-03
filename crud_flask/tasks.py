@@ -3,26 +3,29 @@ import json
 from flask import Blueprint, render_template, request, session
 
 from .auth import requires_auth
-from .model import Task, db
+from .model import Task, User, db
 
 bp_tasks = Blueprint("tasks", __name__)
 
 
-@bp_tasks.route("/profile", methods=["GET"])
+@bp_tasks.route("/user/<nickname>", methods=["GET"])
 @requires_auth
-def profile():
-    tasks = Task.query.all()
+def user(nickname):
+    user = User.query.filter_by(nickname=f"{nickname}").first()
+    tasks = Task.query.filter_by(user_id=f"{user.id}").all()
     return render_template(
-        "profile.html",
-        userinfo=session["profile"],
+        "user.html",
+        userinfo=session["user"],
         userinfo_pretty=json.dumps(session["jwt_payload"], indent=4),
         tasks=tasks,
+        user=user
     )
 
 
-@bp_tasks.route("/task/create", methods=["POST"])
-def create():
-    task = Task(request.form["create-task"], request.form["create-date"])
+@bp_tasks.route("/task/create/<int:id>", methods=["POST"])
+def create(id):
+    task = Task(user_id=id, name=request.form["create-task"], create_date=request.form["create-date"])
+    print(task.user_id)
     db.session.add(task)
     db.session.commit()
     response = f"""

@@ -6,7 +6,7 @@ body {
 }
 
 .wrapper {
-  background-color: var(--color-third);
+  background-image: linear-gradient(180deg, var(--color-tertiary) 20%, var(--color-tertiary-dark))
 }
 
 .btn-login {
@@ -14,7 +14,7 @@ body {
   border-radius: 50px;
   width: 160px;
   height: 25px;
-  background-color: var(--color-second);
+  background-color: var(--color-secondary);
   cursor: pointer;
   font-weight: bold;
   margin-top: 50px;
@@ -25,6 +25,8 @@ body {
   height: 100%;
 }
 
-a {
+.btn-login a {
+  display:block;
+  width: 100%;
   color: white;
 }

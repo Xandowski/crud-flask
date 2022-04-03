@@ -4,7 +4,9 @@ from urllib.parse import urlencode
 
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
-from flask import Blueprint, redirect, session, url_for
+from flask import Blueprint, jsonify, redirect, session, url_for
+
+from .model import User, db
 
 bp_auth = Blueprint("auth", __name__)
 
@@ -35,7 +37,6 @@ def configure(app):
 
     @bp_auth.route("/login", methods=["GET"])
     def login():
-        # return render_template("login.html")
         return auth0.authorize_redirect(redirect_uri=AUTH0_CALLBACK_URL)
 
     @bp_auth.route("/logout", methods=["GET"])
@@ -56,25 +57,32 @@ def configure(app):
         resp = auth0.get("userinfo")  # type: ignore
         userinfo = resp.json()
 
+        if not User.query.get(userinfo['email']):
+            user = User(username=userinfo['given_name'], 
+                        lastname=userinfo['family_name'], 
+                        nickname=userinfo['nickname'], 
+                        email=userinfo['email'])
+            db.session.add(user)
+            db.session.commit()
+        
+        user = User.query.filter_by(email=userinfo['email']).first()
+
         # Store the user information in flask session.
         session["jwt_payload"] = userinfo
-        session["profile"] = {
+        session["user"] = {
             "user_id": userinfo["sub"],
             "name": userinfo["name"],
             "picture": userinfo["picture"],
         }
-        return redirect("/profile")
+        return redirect(f"/user/{user.nickname}")
 
 
 def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        if "profile" not in session:
+        if "user" not in session:
             # Redirect to Login page here
             return redirect("/")
         return f(*args, **kwargs)
 
     return decorated
-
-
-# type: ignore
