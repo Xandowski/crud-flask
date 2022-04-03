@@ -18,7 +18,7 @@
     <div class="logged-in-box auth0-box logged-in">
         <nav class="navbar">
             <img class="avatar" src="{{userinfo['picture']}}" />
-            <h2>Welcome, {{userinfo['name']}}</h2>
+            <h2>Bem-vindo, {{userinfo['name']}}</h2>
             <a class="btn" href="/logout">Logout <i class="fa-solid fa-arrow-right-from-bracket"></i></a>
         </nav>
         <main class="wrapper-profile">
@@ -26,7 +26,7 @@
             <section class="new-task">
                 <form 
                     class="form-inline" 
-                    hx-post="/task/create" 
+                    hx-post="/task/create/{{user.id}}" 
                     hx-swap="beforebegin"
                     hx-target="#newTask" 
                 >
@@ -38,19 +38,13 @@
                         <p>Expiration date:</p>
                         <input type="date" class="form-control" name="create-date" id="expiration-date">
                     </label>
+                    <!-- <input type="number" value="{{user.id}}" hidden name="user-id"> -->
                     <button class="btn-new-task">Create Task</button>
                 </form>
         </section>
             
            <section>
                 <table class="table delete-row-example">
-                    <!-- <thead>
-                    <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Edit/Delete</th>
-                        <th scope="col">Expiration</th>
-                    </tr>
-                    </thead> -->
                     <tbody hx-target="closest tr" hx-swap="outerHTML">
                         {%for t in tasks%}
                     
