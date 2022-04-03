@@ -1,6 +1,7 @@
-from flask_marshmallow import Marshmallow, fields
+from flask_marshmallow import Marshmallow
+from marshmallow_sqlalchemy import auto_field
 
-from .model import Task
+from .model import Task, User
 
 ma = Marshmallow()
 
@@ -12,8 +13,12 @@ def configure(app):
 class TaskSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Task
+        include_fk = True
+        load_instance = True
 
 
-# class UserSchema(ma.SQLAlchemyAutoSchema):
-#     class Meta:
-#         model = User
+class UserSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = User
+        include_relationships = True
+        load_instance = True
