@@ -6,15 +6,16 @@
 }
 
 a {
-  color: var(--color-third);
+  color: var(--color-tertiary);
   text-decoration: none;
+  color: white;
 }
 
 html,
 body {
   font-family: "Noto Serif", serif;
   height: 100vh;
-  background-color: var(--color-second);
+  background-color: var(--color-secondary);
 }
 
 .avatar {
@@ -37,11 +38,11 @@ body {
   align-items: flex-end;
   height: 70px;
   width: 100vw;
-  background-color: var(--color-third);
+  background-color: var(--color-tertiary);
 }
 
 .fa-arrow-right-from-bracket {
-  color: var(--color-second);
+  color: var(--color-secondary);
   cursor: pointer;
 }
 
@@ -142,7 +143,7 @@ tbody tr td input {
 }
 
 .btn-new-task {
-  background-color: var(--color-first);
+  background-color: var(--color-primary);
   border: 0;
   border-radius: 5px;
   width: 290px;
@@ -154,6 +155,6 @@ tbody tr td input {
 }
 
 .btn-new-task:hover {
-  background-color: var(--color-first-dark);
+  background-color: var(--color-primary-dark);
   transition: all 0.5s ease-in;
 }
