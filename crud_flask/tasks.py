@@ -1,4 +1,5 @@
 import json
+from datetime import date
 
 from flask import Blueprint, render_template, request, session
 
@@ -18,7 +19,8 @@ def user(nickname):
         userinfo=session["user"],
         userinfo_pretty=json.dumps(session["jwt_payload"], indent=4),
         tasks=tasks,
-        user=user
+        user=user,
+        date=date.today()
     )
 
 
@@ -29,7 +31,7 @@ def create(id):
     db.session.add(task)
     db.session.commit()
     response = f"""
-    <tr>
+    <tr class="font-bold text-primary-dark">
         <td>{task.name}</td>
         <td>{task.create_date}</td>
         <td>
@@ -50,9 +52,16 @@ def create(id):
                     end
                     trigger edit"
                 >
-                    <i class='fas fa-edit fa-lg' name='edit' hx-get='/task/{task.id}/edit' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i>
-            </span hx-delete='/task/delete/{task.id}'>
-            <span><i class='fas fa-trash fa-lg' name='a' hx-delete='/task/delete/{task.id}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>
+                    <i 
+                        class='fas fa-edit cursor-pointer' 
+                        name='edit' 
+                        hx-get='/task/{task.id}/edit' 
+                        hx-target='closest tr' 
+                        hx-swap='outerHTML swap:1s'
+                    >
+                    </i>
+            </span>
+            <span><i class='fas fa-trash text-delete cursor-pointer' name='delete' hx-delete='/task/delete/{task.id}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>
         </td>
     <tr/>
     """
@@ -73,15 +82,15 @@ def enable_edit(id):
     task = Task.query.get(id)
     print(task.id)
     response = f"""
-    <tr hx-trigger='cancel' class='editing' hx-get="/task/{task.id}">
-        <td><input type="text" name='create-task' value='{task.name}'></td>
-        <td><input type="date" name='create-date' value='{task.create_date}'></td>
+    <tr class="font-bold text-primary-dark w-screen" hx-trigger='cancel' class='editing' hx-get="/task/{task.id}">
+        <td><input class="w-32 md:w-36 bg-transparent border-x-transparent border-b-btn-task" type="text" name='create-task' value='{task.name}'></td>
+        <td><input class="w-36 bg-transparent border-x-transparent border-b-btn-task cursor-pointer" type="date" name='create-date' value='{task.create_date}'></td>
         <td>
             <span hx-put="/task/{task.id}" hx-include="closest tr">
-                <i class='fas fa-square-check fa-lg'></i>
+                <i class='fas fa-square-check text-btn-task cursor-pointer'></i>
             </span>
             <span hx-get="/task/{task.id}">
-                <i class='fas fa-rectangle-xmark fa-lg'></i>
+                <i class='fas fa-rectangle-xmark text-delete cursor-pointer'></i>
             </span>
         </td>
         
@@ -100,7 +109,7 @@ def edit(id):
         db.session.commit()
 
     response = f"""
-    <tr>
+    <tr class="font-bold text-primary-dark">
         <td>{task.name}</td>
         <td>{task.create_date}</td>
         <td>
@@ -120,11 +129,11 @@ def edit(id):
                     end
                     trigger edit"
             >
-                <i class='fas fa-edit fa-lg' 
+                <i class='fas fa-edit cursor-pointer' 
                 name='edit' hx-get='/task/{task.id}/edit' hx-target='closest tr' hx-swap='outerHTML swap:1s'>
                 </i>
             </span hx-delete='/task/delete/{task.id}'>
-            <span><i class='fas fa-trash fa-lg' name='delete' hx-delete='/task/delete/{task.id}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>        
+            <span><i class='fas fa-trash cursor-pointer text-delete' name='delete' hx-delete='/task/delete/{task.id}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>        
         </td>
     </tr>
     """

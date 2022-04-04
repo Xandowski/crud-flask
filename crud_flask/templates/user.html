@@ -10,45 +10,52 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../static/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script src="../static/js/tailwind.config.js"></script>
+    <script src="https://unpkg.com/htmx.org@1.7.0"></script>
     <title>Profile Page</title>
 </head>
 
-<body>
-    <script src="https://unpkg.com/htmx.org@1.7.0"></script>
+<body class="flex flex-col items-center justify-between bg-primary h-screen">
     <div class="logged-in-box auth0-box logged-in">
-        <nav class="navbar">
-            <img class="avatar" src="{{userinfo['picture']}}" />
-            <h2>Bem-vindo, {{userinfo['name']}}</h2>
-            <a class="btn" href="/logout">Logout <i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+        <nav class="flex justify-between items-end w-screen h-16 bg-primary-dark text-secondary text-secondary">
+            <img class="md:ml-3 h-14 rounded-full" src="{{userinfo['picture']}}" />
+            <h2 class="text-base lg:text-3xl md:text-2xl">Bem-vindo, {{userinfo['name']}}</h2>
+            <a class="btn" href="/logout"><span class="mr-3 font-bold hidden md:inline-block">Sair</span><i class="fa-solid fa-arrow-right-from-bracket md:mr-3"></i></a>
         </nav>
-        <main class="wrapper-profile">
-            <h1 clas="title">MyTasks</h1>
-            <section class="new-task">
+        <main class="text-center">
+            <h1 class="text-2xl md:text-3xl font-bold text-secondary drop-shadow-lg">MyTasks</h1>
+            <section class="mt-5">
                 <form 
-                    class="form-inline" 
+                    class="form-inline flex flex-col items-center text-left text-primary-dark font-bold" 
                     hx-post="/task/create/{{user.id}}" 
                     hx-swap="beforebegin"
                     hx-target="#newTask" 
                 >
-                    <label for="task-name" class="form-group mx-sm-3 mb-2">
+                    <label for="task-name" class="form-group mt-3 md:flex md:justify-between md:w-1/4 ">
                         <p>Task name:</p>
-                        <input type="text" class="form-control" name="create-task" id="task-name">
+                        <input type="text" class="form-control form-input px-1 py-1 h-8 w-56 text-primary-dark" name="create-task" id="task-name">
                     </label>
-                    <label for="expiration-date" class="form-group mx-sm-3 mb-2">
+                    <label for="expiration-date" class="form-group mt-3 md:flex md:justify-between md:w-1/4">
                         <p>Expiration date:</p>
-                        <input type="date" class="form-control" name="create-date" id="expiration-date">
+                        <input 
+                            type="date" 
+                            class="cursor-pointer form-control form-input px-1 py-1 h-8 w-56 text-primary-dark" name="create-date" 
+                            id="expiration-date"
+                            min="{{date}}"
+                        >
                     </label>
-                    <!-- <input type="number" value="{{user.id}}" hidden name="user-id"> -->
-                    <button class="btn-new-task">Create Task</button>
+                    
+                    <button class="w-56 md:w-1/4 mt-3 bg-transparent drop-shadow-lg hover:bg-btn-task text-secondary font-semibold hover:text-primary-dark border border-secondary hover:border-transparent rounded">CREATE TASK</button>
                 </form>
         </section>
             
-           <section>
-                <table class="table delete-row-example">
-                    <tbody hx-target="closest tr" hx-swap="outerHTML">
+           <section class="flex justify-center py-10">
+                <table class="table delete-row-example w-screen md:w-1/4 table-auto">
+                    <tbody class="w-full" hx-target="closest tr" hx-swap="outerHTML">
                         {%for t in tasks%}
                     
-                            <tr>
+                            <tr class="font-bold text-primary-dark mt-3">
                                 <td>{{t.name}}</td>
                                 <td>{{t.create_date}}</td>
                                 <td>
@@ -71,12 +78,12 @@
                                             trigger edit"
                                     >
                                         <i 
-                                            class='fas fa-edit fa-lg' 
+                                            class='fas fa-edit cursor-pointer' 
                                             name='edit'
                                             hx-get='/task/{{t.id}}/edit'
                                         ></i>
                                     </span>
-                                    <span><i class='fas fa-trash fa-lg' name='delete' hx-delete='/task/delete/{{t.id}}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>        
+                                    <span><i class='fas fa-trash text-delete cursor-pointer' name='delete' hx-delete='/task/delete/{{t.id}}' hx-target='closest tr' hx-swap='outerHTML swap:1s'></i></span>        
                                 </td>
                             </tr>
                         {%endfor%}
@@ -86,7 +93,7 @@
            </section>
         </main>
     </div>
-    <footer><i class="fa-solid fa-copyright"></i> Copyright | Alexandre Morais | 2022 | <a href="https://github.com/Xandowski/crud-flask"><i class="fa-brands fa-github"></i></a></footer>
+    <footer class="font-bold text-sm md:text-base"><i class="fa-solid fa-copyright"></i> Copyright | Alexandre Morais | 2022 | <a href="https://github.com/Xandowski/crud-flask"><i class="fa-brands fa-github"></i></a></footer>
 </body>
 
 </html>

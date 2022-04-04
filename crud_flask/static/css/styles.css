@@ -1,7 +1,4 @@
-@import "profile.css";
-
 @layer utilities {
-  .content-auto {
-    content-visibility: auto;
+
   }
-}
+  
