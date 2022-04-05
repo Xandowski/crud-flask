@@ -4,7 +4,7 @@ from urllib.parse import urlencode
 
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
-from flask import Blueprint, jsonify, redirect, session, url_for
+from flask import Blueprint, redirect, session, url_for
 
 from .model import User, db
 
@@ -19,9 +19,11 @@ AUTH0_CLIENT_ID = env.get("AUTH0_CLIENT_ID")
 AUTH0_CLIENT_SECRET = env.get("AUTH0_CLIENT_SECRET")
 AUTH0_DOMAIN = env.get("AUTH0_DOMAIN")
 AUTH0_AUDIENCE = env.get("AUTH0_AUDIENCE")
+SECRET_KEY = env.get("SECRET_KEY")
 
 
 def configure(app):
+    app.secret_key = SECRET_KEY
     oauth = OAuth(app)
     auth0 = oauth.register(
         "auth0",

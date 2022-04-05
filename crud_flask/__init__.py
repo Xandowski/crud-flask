@@ -25,8 +25,6 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = f"{env.get('DATABASE')}"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-    app.secret_key = constants.SECRET_KEY
-
     config_db(app)
     config_ma(app)
     config_auth(app)
