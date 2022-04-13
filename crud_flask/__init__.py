@@ -7,7 +7,6 @@ from dotenv import find_dotenv, load_dotenv
 from flask import Flask
 from flask_migrate import Migrate
 
-from . import constants
 from .auth import bp_auth
 from .auth import configure as config_auth
 from .home import bp_home

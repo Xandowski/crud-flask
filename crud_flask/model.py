@@ -11,7 +11,7 @@ def configure(app):
 class Task(db.Model):  # type: ignore
     id = db.Column("id", db.Integer, primary_key=True)
     user_id = db.Column("user_id", db.Integer, db.ForeignKey("user.id"), nullable=False)
-    name = db.Column(db.String(150))
+    name = db.Column(db.String(150), nullable=False)
     create_date = db.Column(db.String(150))
     user = db.relationship('User', backref='task', lazy=True)
 
@@ -26,7 +26,7 @@ class User(db.Model):
     username = db.Column(db.String(255))
     lastname = db.Column(db.String(255))
     nickname = db.Column(db.String(255))
-    email = db.Column(db.String(255))
+    email = db.Column(db.String(255), unique=True)
     
     def __init__(self, username, lastname, nickname, email):
         self.username = username
